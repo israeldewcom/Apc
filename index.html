@@ -1102,9 +1102,128 @@ body.offline .offline-indicator {
     display: none; /* hide on desktop */
   }
 }
+/* ===== APC CUSTOM POLITICAL COLOURS ===== */
+:root {
+  --apc-green: #00843D;
+  --apc-white: #FFFFFF;
+  --apc-green-dark: #006b31;
+  --apc-green-glow: rgba(0,132,61,0.15);
+}
+.broom-logo {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%2300843D" d="M20 70 L30 30 L70 30 L80 70 L50 90 Z" /><rect x="42" y="10" width="16" height="30" fill="%2300843D" /></svg>') no-repeat center;
+  background-size: contain;
+}
+.apc-theme .btn-primary-apc {
+  background: linear-gradient(135deg, var(--apc-green), var(--apc-green-dark));
+}
+.apc-theme .nav-item.active, .apc-theme .auth-tab.active {
+  background: var(--apc-green);
+}
+.apc-theme .text-primary {
+  color: var(--apc-green) !important;
+}
+/* ===== NEW PAGES & SECTIONS ===== */
+.welcome-page {
+  text-align: center;
+  padding: 40px 20px;
+}
+.welcome-page .broom-logo {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+}
+.video-stream-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+.video-thumb {
+  background: var(--bg-card2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  position: relative;
+}
+.video-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.video-thumb-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  padding: 12px;
+  color: white;
+}
+/* GDPR consent banner */
+.gdpr-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: 16px 20px;
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.gdpr-banner.show {
+  display: flex;
+}
+/* Data export modal */
+.data-export-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.data-export-option:hover {
+  border-color: var(--primary);
+  background: var(--primary-glow);
+}
 </style>
 </head>
-<body>
+<body class="apc-theme">
+
+<!-- GDPR CONSENT BANNER -->
+<div class="gdpr-banner" id="gdpr-banner">
+  <div><i class="fas fa-cookie-bite" style="color: var(--apc-green); margin-right: 8px;"></i> We use cookies and collect data to improve your experience. By using APC Connect, you agree to our <a href="#" onclick="showToast('Privacy policy')">Privacy Policy</a>.</div>
+  <div>
+    <button class="btn-outline-apc" onclick="acceptGDPR()">Accept</button>
+    <button class="btn-primary-apc" onclick="acceptGDPR()" style="margin-left: 8px;">Accept All</button>
+  </div>
+</div>
+
+<!-- WELCOME PAGE (shown before auth) -->
+<div id="welcome-screen" style="position: fixed; inset: 0; z-index: 1000; background: var(--bg-base); display: none; align-items: center; justify-content: center; padding: 20px;">
+  <div class="auth-card" style="max-width: 600px; text-align: center;">
+    <div class="broom-logo" style="width: 80px; height: 80px; margin: 0 auto 20px;"></div>
+    <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 8px;">APC Private <span style="color: var(--apc-green);">Connect</span></h1>
+    <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 32px;">Secure communication for delegates • NIN verified • Biometric protected</p>
+    <div style="display: flex; gap: 16px; justify-content: center;">
+      <button class="btn-primary-apc" onclick="showAuthPanel('login')" style="width: auto; padding: 14px 32px;">Sign In</button>
+      <button class="btn-outline-apc" onclick="showAuthPanel('register')" style="width: auto; padding: 14px 32px;">Register</button>
+    </div>
+    <div style="margin-top: 32px; font-size: 0.8rem; color: var(--text-muted);">
+      <i class="fas fa-check-circle" style="color: var(--apc-green);"></i> NIN & fingerprint required • All Progressives Congress official platform
+    </div>
+  </div>
+</div>
 
 <!-- SPLASH (unchanged) -->
 <div id="splash">
@@ -1313,6 +1432,18 @@ body.offline .offline-indicator {
     <a class="nav-item" onclick="navigate('about')">
       <span class="nav-icon"><i class="fas fa-info-circle"></i></span> About
     </a>
+    <a class="nav-item" onclick="navigate('welcome')">
+      <span class="nav-icon"><i class="fas fa-home"></i></span> Welcome
+    </a>
+    <a class="nav-item" onclick="navigate('video-streams')">
+      <span class="nav-icon"><i class="fas fa-play-circle"></i></span> Live Streams
+    </a>
+    <a class="nav-item" onclick="navigate('marketplace')">
+      <span class="nav-icon"><i class="fas fa-store"></i></span> Marketplace
+    </a>
+    <a class="nav-item" onclick="navigate('events')">
+      <span class="nav-icon"><i class="fas fa-calendar-alt"></i></span> Events
+    </a>
     <div class="nav-section" id="admin-section" style="display:none">Admin</div>
     <a class="nav-item" id="admin-link" onclick="navigate('admin')" style="display:none">
       <span class="nav-icon"><i class="fas fa-shield-halved"></i></span> Admin Panel
@@ -1356,6 +1487,23 @@ body.offline .offline-indicator {
 
     <!-- CONTENT AREA (all pages) -->
     <div class="content-area">
+
+      <!-- WELCOME PAGE (new) -->
+      <div class="page" id="page-welcome">
+        <div class="welcome-page">
+          <div class="broom-logo" style="width: 100px; height: 100px; margin: 0 auto 30px;"></div>
+          <h1 style="font-size: 2.2rem; font-weight: 800;">APC Private Connect</h1>
+          <p style="font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 20px auto;">Secure communication for APC delegates. NIN verified, biometric protected.</p>
+          <div style="margin: 40px 0;">
+            <button class="btn-primary-apc" onclick="showAuthPanel('login')" style="width: auto; padding: 16px 40px;">Get Started</button>
+          </div>
+          <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 60px;">
+            <div><i class="fas fa-fingerprint" style="font-size: 2rem; color: var(--apc-green);"></i><br>Biometric Login</div>
+            <div><i class="fas fa-shield-alt" style="font-size: 2rem; color: var(--apc-green);"></i><br>End‑to‑End Encrypted</div>
+            <div><i class="fas fa-users" style="font-size: 2rem; color: var(--apc-green);"></i><br>Delegate Groups</div>
+          </div>
+        </div>
+      </div>
 
       <!-- FEED PAGE -->
       <div class="page active" id="page-feed">
@@ -1650,7 +1798,6 @@ body.offline .offline-indicator {
         </div>
       </div>
 
-      <!-- NEW PAGES -->
       <!-- SEARCH RESULTS PAGE -->
       <div class="page" id="page-search">
         <div class="section-header">
@@ -1707,6 +1854,33 @@ body.offline .offline-indicator {
         <div class="card-apc card-body-apc">
           <div id="about-content"></div>
         </div>
+      </div>
+
+      <!-- VIDEO STREAMS PAGE (new) -->
+      <div class="page" id="page-video-streams">
+        <div class="section-header">
+          <div class="section-title">Live Video Streams</div>
+          <button class="btn-filled-sm" onclick="openModal('create-stream-modal')"><i class="fas fa-video"></i> Go Live</button>
+        </div>
+        <div class="video-stream-grid" id="video-streams-list"></div>
+      </div>
+
+      <!-- MARKETPLACE PAGE (new) -->
+      <div class="page" id="page-marketplace">
+        <div class="section-header">
+          <div class="section-title">Marketplace</div>
+          <button class="btn-filled-sm" onclick="openModal('create-listing-modal')"><i class="fas fa-plus"></i> Create Listing</button>
+        </div>
+        <div class="groups-grid" id="marketplace-list"></div>
+      </div>
+
+      <!-- EVENTS PAGE (new) -->
+      <div class="page" id="page-events">
+        <div class="section-header">
+          <div class="section-title">Upcoming Events</div>
+          <button class="btn-filled-sm" onclick="openModal('create-event-modal')"><i class="fas fa-calendar-plus"></i> Create Event</button>
+        </div>
+        <div class="meetings-grid" id="events-list"></div>
       </div>
 
     </div><!-- content-area -->
@@ -1940,6 +2114,58 @@ body.offline .offline-indicator {
   </div>
 </div>
 
+<!-- NEW MODALS -->
+<!-- Create Stream Modal -->
+<div class="modal-overlay" id="create-stream-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Go Live</div>
+      <button class="modal-close" onclick="closeModal('create-stream-modal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Stream Title</label><input class="form-control-apc" id="stream-title" placeholder="e.g. NEC Live Broadcast"></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-control-apc" rows="3" placeholder="What's this stream about?"></textarea></div>
+      <div class="form-group"><label class="form-label">Visibility</label>
+        <select class="form-control-apc">
+          <option>Public</option>
+          <option>Delegates Only</option>
+          <option>Private (Invite)</option>
+        </select>
+      </div>
+      <button class="btn-primary-apc" onclick="startLiveStream()">Start Stream</button>
+    </div>
+  </div>
+</div>
+
+<!-- Data Export Modal -->
+<div class="modal-overlay" id="data-export-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Export Your Data</div>
+      <button class="modal-close" onclick="closeModal('data-export-modal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p>Choose what to export (GDPR compliant).</p>
+      <div class="data-export-option" onclick="exportData('profile')">
+        <i class="fas fa-user fa-2x" style="color: var(--primary);"></i>
+        <div><strong>Profile Information</strong><br><small>Name, email, phone, bio</small></div>
+      </div>
+      <div class="data-export-option" onclick="exportData('posts')">
+        <i class="fas fa-newspaper fa-2x" style="color: var(--primary);"></i>
+        <div><strong>Posts & Comments</strong><br><small>All your posts and comments</small></div>
+      </div>
+      <div class="data-export-option" onclick="exportData('messages')">
+        <i class="fas fa-comments fa-2x" style="color: var(--primary);"></i>
+        <div><strong>Messages</strong><br><small>All direct messages and group chats</small></div>
+      </div>
+      <div class="data-export-option" onclick="exportData('all')">
+        <i class="fas fa-database fa-2x" style="color: var(--primary);"></i>
+        <div><strong>Everything</strong><br><small>Complete data archive</small></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Toast Container -->
 <div class="toast-container" id="toast-container"></div>
 
@@ -1978,7 +2204,8 @@ const STATE = {
   lastActivity: Date.now(),
   inactivityTimer: null,
   searchDebounceTimer: null,
-  isOffline: !navigator.onLine
+  isOffline: !navigator.onLine,
+  gdprAccepted: localStorage.getItem('gdprAccepted') === 'true'
 };
 
 // --- MOCK DATA (extended) ---
@@ -2124,6 +2351,37 @@ window.addEventListener('online', updateOfflineStatus);
 window.addEventListener('offline', updateOfflineStatus);
 updateOfflineStatus();
 
+// --- GDPR CONSENT ---
+function showGDPRBanner() {
+  if (!STATE.gdprAccepted) {
+    document.getElementById('gdpr-banner').classList.add('show');
+  }
+}
+function acceptGDPR() {
+  STATE.gdprAccepted = true;
+  localStorage.setItem('gdprAccepted', 'true');
+  document.getElementById('gdpr-banner').classList.remove('show');
+  showToast('Thank you for accepting our privacy terms.', 'success');
+}
+
+// --- WELCOME SCREEN ---
+function showWelcomeScreen() {
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('welcome-screen').style.display = 'flex';
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').classList.remove('visible');
+}
+function showAuthPanel(panel) {
+  document.getElementById('welcome-screen').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+  showPanel(panel);
+}
+// Override splash to show welcome first
+setTimeout(() => {
+  document.getElementById('splash').style.display = 'none';
+  showWelcomeScreen();
+}, 3200);
+
 // --- AUTH (enhanced) ---
 function showPanel(panel) {
   ['login','twofa','register','pending','forgot'].forEach(p => {
@@ -2215,15 +2473,14 @@ function loginSuccess(user) {
   showToast(`Welcome back, ${user.name.split(' ')[0]}! Biometric session active.`,'success');
   // Start inactivity monitor
   startInactivityTimer();
+  showGDPRBanner(); // Show GDPR banner after login
 }
 function doLogout() {
   STATE.user = null;
   fingerprintScanned = false;
   document.getElementById('app').classList.remove('visible');
-  document.getElementById('auth-screen').style.display = 'flex';
-  showPanel('login');
-  document.getElementById('login-email').value = '';
-  document.getElementById('login-pass').value = '';
+  document.getElementById('auth-screen').style.display = 'none';
+  showWelcomeScreen();
   if (STATE.inactivityTimer) clearTimeout(STATE.inactivityTimer);
 }
 function applyUserToUI(user) {
@@ -2289,6 +2546,9 @@ function initApp() {
   renderUserTable();
   renderSystemLogs();
   renderNewPages(); // populate new pages
+  renderVideoStreams();
+  renderMarketplace();
+  renderEvents();
   autoSimulate();
   // post visibility toggle
   document.getElementById('post-visibility')?.addEventListener('change', function(e) {
@@ -2309,9 +2569,63 @@ function renderNewPages() {
   renderHelp();
   renderAbout();
 }
+function renderVideoStreams() {
+  const container = document.getElementById('video-streams-list');
+  if (!container) return;
+  const streams = [
+    { title: 'NEC Plenary Live', host: 'Emeka Chukwu', viewers: 234, thumbnail: '' },
+    { title: 'FCT Zone Meeting', host: 'Aisha Okafor', viewers: 89, thumbnail: '' },
+    { title: 'Policy Debate', host: 'Ngozi Eze', viewers: 156, thumbnail: '' },
+    { title: 'Women Wing Workshop', host: 'Chidinma Obi', viewers: 45, thumbnail: '' }
+  ];
+  container.innerHTML = streams.map(s => `
+    <div class="video-thumb" onclick="openVideoCall('${s.title}')">
+      <div class="video-thumb-info">
+        <strong>${s.title}</strong><br>
+        <small>${s.host} · ${s.viewers} watching</small>
+      </div>
+    </div>`).join('');
+}
+function renderMarketplace() {
+  const container = document.getElementById('marketplace-list');
+  if (!container) return;
+  const listings = [
+    { title: 'APC Campaign Materials', price: '₦5,000', seller: 'Babatunde Ojo' },
+    { title: 'Party Regalia', price: '₦12,000', seller: 'Fatima Aliyu' },
+    { title: 'Fundraising Event Tickets', price: 'Free', seller: 'Yusuf Bello' }
+  ];
+  container.innerHTML = listings.map(l => `
+    <div class="group-card" onclick="showToast('View listing')">
+      <div class="group-icon" style="background:#4facfe"><i class="fas fa-tag"></i></div>
+      <div class="group-name">${l.title}</div>
+      <div class="group-meta">${l.price} · ${l.seller}</div>
+    </div>`).join('');
+}
+function renderEvents() {
+  const container = document.getElementById('events-list');
+  if (!container) return;
+  container.innerHTML = MEETINGS_DATA.filter(m => m.status !== 'ended').map(m => `
+    <div class="meeting-card upcoming" onclick="showToast('Event details')">
+      <div class="meeting-title">${m.title}</div>
+      <div class="meeting-detail"><i class="fas fa-calendar"></i> ${m.date} at ${m.time}</div>
+      <div class="meeting-detail"><i class="fas fa-user-tie"></i> ${m.host}</div>
+    </div>`).join('');
+}
+function startLiveStream() {
+  const title = document.getElementById('stream-title').value;
+  if (!title) { showToast('Please enter a stream title', 'error'); return; }
+  closeModal('create-stream-modal');
+  openVideoCall(title);
+  showToast('Stream started!', 'success');
+}
+function exportData(type) {
+  closeModal('data-export-modal');
+  showToast(`Exporting ${type} data... (simulated)`, 'info');
+  setTimeout(() => showToast('Data export completed. Check your email.', 'success'), 3000);
+}
 
 // --- NAVIGATION (unchanged) ---
-const PAGE_TITLES = { feed:'News Feed', groups:'Groups', chat:'Messages', meetings:'Meetings', notifications:'Notifications', profile:'My Profile', admin:'Admin Dashboard', search:'Search', directory:'Directory', recordings:'Recordings', settings:'Settings', help:'Help', about:'About' };
+const PAGE_TITLES = { feed:'News Feed', groups:'Groups', chat:'Messages', meetings:'Meetings', notifications:'Notifications', profile:'My Profile', admin:'Admin Dashboard', search:'Search', directory:'Directory', recordings:'Recordings', settings:'Settings', help:'Help', about:'About', welcome:'Welcome', 'video-streams':'Live Streams', marketplace:'Marketplace', events:'Events' };
 function navigate(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -3042,6 +3356,9 @@ function renderSettings() {
     <div class="form-group"><label class="form-label">Email Notifications</label><select class="form-control-apc"><option>Enabled</option><option>Disabled</option></select></div>
     <div class="form-group"><label class="form-label">Language</label><select class="form-control-apc"><option>English</option><option>Hausa</option><option>Yoruba</option><option>Igbo</option></select></div>
     <button class="btn-primary-apc" onclick="showToast('Settings saved','success')">Save Settings</button>
+    <hr>
+    <div class="flex-between"><span><i class="fas fa-database"></i> Data Export</span><button class="btn-outline-apc" onclick="openModal('data-export-modal')">Export</button></div>
+    <div class="flex-between mt-16"><span><i class="fas fa-trash"></i> Delete Account</span><button class="btn-outline-apc" style="color:var(--danger)" onclick="requireFingerprint(()=>showToast('Account deletion requested','error'))">Delete</button></div>
   `;
 }
 function renderHelp() {
